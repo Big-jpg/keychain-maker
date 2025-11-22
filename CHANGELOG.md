@@ -2,6 +2,33 @@
 
 All notable changes to the OpenSCAD Keychain Maker project will be documented in this file.
 
+## [1.2.0] - 2025-11-22
+
+### Added
+- **Multi-Color 3D Printing Support**: New templates optimized for two-color printing
+  - `barbie_keychain_multicolor.scad`: Fixed heights (2.5mm base + 1.5mm text)
+  - `keychain_configurable.scad`: Customizable layer heights
+- **Template Selection UI**: Choose from example templates or upload custom ones
+- **MULTICOLOR_PRINTING.md**: Comprehensive guide for multi-color 3D printing
+  - Slicer setup instructions (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer)
+  - Layer calculation formulas and tables
+  - Color combination ideas
+  - Troubleshooting tips
+- **In-App Guide**: Expandable multi-color printing instructions in the UI
+- **Single Mesh Design**: Both layers combined into one STL for easy slicing
+
+### Improved
+- **Template Architecture**: Two-layer design with distinct heights for color changes
+- **User Experience**: Clear template descriptions and multi-color printing indicators
+- **Documentation**: Added multi-color printing section to README
+
+### Technical Details
+- Templates use OpenSCAD `union()` to create single mesh
+- Base layer: 0-2.5mm (Color 1)
+- Text layer: 2.5-4.0mm (Color 2)
+- Color change point: Z=2.5mm
+- Compatible with all major slicers
+
 ## [1.1.0] - 2025-11-22
 
 ### Added

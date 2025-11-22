@@ -79,12 +79,62 @@ with st.sidebar:
 # Main form
 st.header("Generate Keychain")
 
-# File uploads
-template_file = st.file_uploader(
-    "Upload OpenSCAD Template (.scad)",
-    type=["scad"],
-    help="Upload a .scad file with {{TEXT}}, {{FONT_NAME}}, and {{TTF_FILE}} placeholders"
+# Template selection or upload
+st.subheader("📄 Template")
+
+template_option = st.radio(
+    "Choose template source:",
+    ["Use Example Template", "Upload Custom Template"],
+    horizontal=True
 )
+
+template_file = None
+template_description = ""
+
+if template_option == "Use Example Template":
+    example_templates = {
+        "Basic (Original)": {
+            "file": "examples/barbie_keychain.scad",
+            "description": "Original template with pink base and white text overlay. Single color or basic multi-color."
+        },
+        "Multi-Color (2 layers)": {
+            "file": "examples/barbie_keychain_multicolor.scad",
+            "description": "**Optimized for multi-color printing!** Base: 2.5mm (Color 1), Text: 1.5mm (Color 2). Set color change at Z=2.5mm in your slicer."
+        },
+        "Configurable Heights": {
+            "file": "examples/keychain_configurable.scad",
+            "description": "Advanced template with customizable layer heights. Edit the .scad file to adjust Base_Layer_Height and Text_Layer_Height."
+        }
+    }
+    
+    selected_template = st.selectbox(
+        "Select example template:",
+        list(example_templates.keys())
+    )
+    
+    template_info = example_templates[selected_template]
+    st.info(f"ℹ️ {template_info['description']}")
+    
+    # Read the example template file
+    from pathlib import Path
+    template_path = Path(template_info['file'])
+    if template_path.exists():
+        template_content = template_path.read_bytes()
+        # Create a file-like object
+        import io
+        template_file = io.BytesIO(template_content)
+        template_file.name = template_path.name
+    
+    if selected_template == "Multi-Color (2 layers)":
+        st.success("🎨 **Multi-color printing ready!** See the Multi-Color Printing Guide below for slicer setup instructions.")
+else:
+    template_file = st.file_uploader(
+        "Upload OpenSCAD Template (.scad)",
+        type=["scad"],
+        help="Upload a .scad file with {{TEXT}}, {{FONT_NAME}}, and {{TTF_FILE}} placeholders"
+    )
+
+st.subheader("🎨 Font")
 
 font_file = st.file_uploader(
     "Upload Font File (.ttf or .otf)",
@@ -232,11 +282,70 @@ if st.button("🚀 Generate Keychain", type="primary", use_container_width=True)
             st.error(f"❌ An error occurred: {str(e)}")
             st.exception(e)
 
+# Multi-color printing guide
+st.markdown("---")
+st.header("🎨 Multi-Color 3D Printing Guide")
+
+with st.expander("📚 Click to view multi-color printing instructions", expanded=False):
+    st.markdown("""
+    ### How to Print with Two Colors
+    
+    The **Multi-Color (2 layers)** template creates a single STL with two distinct height layers:
+    
+    - **Base Layer**: 0 to 2.5mm (Color 1, e.g., Pink)
+    - **Text Layer**: 2.5mm to 4.0mm (Color 2, e.g., White)
+    
+    #### Step-by-Step Instructions:
+    
+    1. **Generate STL** using the "Multi-Color (2 layers)" template
+    2. **Import STL** into your slicer (PrusaSlicer, Cura, Bambu Studio, etc.)
+    3. **Add color change** at height = **2.5mm**
+       - PrusaSlicer: Right-click layer slider → "Add color change" at 2.5mm
+       - Cura: Extensions → Post Processing → "Filament Change" at layer 13 (for 0.2mm layers)
+       - Bambu Studio: Click "+" on layer slider at 2.5mm
+    4. **Assign colors**:
+       - Layers 0-2.5mm: Color 1 (base)
+       - Layers 2.5-4.0mm: Color 2 (text)
+    5. **Slice and print!**
+    
+    #### Layer Number Calculator:
+    
+    If your slicer requires layer numbers instead of height:
+    
+    | Layer Height | Layer Number for 2.5mm |
+    |--------------|------------------------|
+    | 0.10mm | Layer 25 |
+    | 0.15mm | Layer 17 |
+    | 0.20mm | Layer 13 |
+    | 0.25mm | Layer 10 |
+    | 0.30mm | Layer 9 |
+    
+    **Formula**: `Layer Number = 2.5mm ÷ Your Layer Height` (round up)
+    
+    #### Tips for Best Results:
+    
+    - ✅ Use 100% infill for solid keychains
+    - ✅ Enable purge tower/wipe tower for clean color transitions
+    - ✅ Purge 50-100mm of filament when changing colors manually
+    - ✅ Preview in your slicer's color mode before printing
+    - ✅ First layer of each color should be well-squished for adhesion
+    
+    #### Color Combination Ideas:
+    
+    - Pink base + White text (Classic Barbie)
+    - Black base + Gold text (Elegant)
+    - Blue base + White text (Clean)
+    - Purple base + Yellow text (Vibrant)
+    - Any combination you like!
+    
+    For detailed instructions, see [MULTICOLOR_PRINTING.md](https://github.com/Big-jpg/keychain-maker/blob/main/MULTICOLOR_PRINTING.md)
+    """)
+
 # Footer
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: gray; font-size: 0.9em;'>
     Made with ❤️ using Streamlit | 
-    <a href='https://github.com/yourusername/keychain-maker' target='_blank'>View on GitHub</a>
+    <a href='https://github.com/Big-jpg/keychain-maker' target='_blank'>View on GitHub</a>
 </div>
 """, unsafe_allow_html=True)

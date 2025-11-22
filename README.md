@@ -12,8 +12,20 @@ This tool allows you to:
 - Get back:
   - A generated `.scad` file with the text & font wired in
   - Optionally, an STL rendered via the OpenSCAD CLI
+  - **NEW**: Multi-color STL files optimized for two-color 3D printing!
 
 The tool works with any OpenSCAD template that follows a simple placeholder convention.
+
+### 🎨 Multi-Color Printing Support
+
+The app now includes templates specifically designed for **multi-color 3D printing**:
+
+- **Two-layer design**: Base layer (2.5mm) + Text layer (1.5mm)
+- **Single STL mesh**: Easy to slice with color changes
+- **Slicer-ready**: Set color change at Z=2.5mm
+- **Perfect for**: Dual-color keychains with contrasting base and text
+
+See [MULTICOLOR_PRINTING.md](MULTICOLOR_PRINTING.md) for detailed instructions.
 
 ## 🚀 Prerequisites
 
