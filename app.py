@@ -130,14 +130,10 @@ if st.button("🚀 Generate Keychain", type="primary", use_container_width=True)
                         output_basename=output_basename
                     )
                     
-                    # Update output paths to use temp directory
-                    req.output_scad = lambda: output_dir / f"{output_basename}.scad"
-                    req.output_stl = lambda: output_dir / f"{output_basename}.stl"
-                    
                     # Render template
                     rendered = render_template(req)
                     
-                    # Write SCAD file
+                    # Define output paths in temp directory
                     scad_output_path = output_dir / f"{output_basename}.scad"
                     scad_output_path.write_text(rendered, encoding="utf-8")
                     
@@ -152,15 +148,7 @@ if st.button("🚀 Generate Keychain", type="primary", use_container_width=True)
                     if render_stl_option:
                         try:
                             with st.spinner("Rendering STL file..."):
-                                # Update request with correct paths
-                                req_for_stl = KeychainRequest(
-                                    template_scad=template_path,
-                                    font_file=font_path,
-                                    text=keychain_text,
-                                    font_name=font_name,
-                                    output_basename=output_basename
-                                )
-                                # Override output paths
+                                # Define STL output path
                                 stl_output_path = output_dir / f"{output_basename}.stl"
                                 
                                 import subprocess
