@@ -8,6 +8,7 @@ import subprocess
 from keychain_maker.models import KeychainRequest
 from keychain_maker.templates import render_template, write_scad_and_font
 from keychain_maker.scad_renderer import render_stl, check_openscad_installed, get_openscad_path, get_openscad_version
+from keychain_maker.font_utils import suggest_font_name
 
 # Page configuration
 st.set_page_config(
@@ -195,6 +196,10 @@ if st.button("🚀 Generate Keychain", type="primary", use_container_width=True)
                     # Save uploaded files to temp directory
                     template_path = tmpdir_path / template_file.name
                     font_path = tmpdir_path / font_file.name
+                    
+                    # Reset file pointers in case they were read before
+                    template_file.seek(0)
+                    font_file.seek(0)
                     
                     template_path.write_bytes(template_file.read())
                     font_path.write_bytes(font_file.read())

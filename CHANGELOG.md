@@ -2,6 +2,34 @@
 
 All notable changes to the OpenSCAD Keychain Maker project will be documented in this file.
 
+## [1.3.0] - 2025-11-22
+
+### Added
+- **Automatic Font Name Detection**: App now extracts the actual font family name from TTF/OTF files
+  - Reads font metadata to get the correct OpenSCAD font identifier
+  - Auto-fills the "Font Name" field with the detected name
+  - Shows success message with detected font info
+  - Fallback to filename-based suggestion if extraction fails
+- **Font Utilities Module** (`font_utils.py`): 
+  - `extract_font_name()`: Reads TTF/OTF 'name' table
+  - `suggest_font_name()`: Provides OpenSCAD-compatible font names
+- **FONT_NAME_GUIDE.md**: Comprehensive guide for understanding font names
+  - Auto-detection explanation
+  - Manual detection methods for Windows/macOS/Linux
+  - Troubleshooting common font issues
+  - Font style reference
+
+### Fixed
+- **Font Rendering Issue**: Fonts now render correctly in generated SCAD/STL files
+  - Previously used hardcoded default "GG:style=Bartex-Regular"
+  - Now uses actual font name from uploaded file
+  - Proper format: `FontFamily:style=StyleName`
+
+### Improved
+- **User Experience**: No more guessing font names!
+- **File Handling**: Added seek(0) to reset file pointers after reading
+- **Error Prevention**: Automatic detection reduces user errors
+
 ## [1.2.0] - 2025-11-22
 
 ### Added
