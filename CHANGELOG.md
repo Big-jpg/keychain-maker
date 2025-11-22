@@ -2,6 +2,27 @@
 
 All notable changes to the OpenSCAD Keychain Maker project will be documented in this file.
 
+## [1.1.0] - 2025-11-22
+
+### Added
+- **Smart OpenSCAD Detection**: Automatically finds OpenSCAD in common installation locations
+  - Windows: Program Files, Program Files (x86), AppData\Local
+  - macOS: /Applications, ~/Applications, Homebrew paths
+  - Linux: /usr/bin, /usr/local/bin, /snap/bin, ~/.local/bin
+- **Version Display**: Shows OpenSCAD version and installation path in sidebar
+- **Environment Variable Support**: `OPENSCAD_PATH` for custom installations
+- **Configuration Guide**: Expandable help section for manual path setup
+- **OPENSCAD_SETUP.md**: Comprehensive setup guide for all platforms
+
+### Improved
+- **Cross-Platform Compatibility**: Works on Windows, macOS, and Linux without PATH configuration
+- **Better Error Messages**: Specific guidance for OpenSCAD installation and configuration
+- **User Experience**: Clear visual feedback about OpenSCAD status
+
+### Changed
+- `scad_renderer.py`: Complete rewrite with platform-aware detection
+- `app.py`: Enhanced sidebar with version info and configuration help
+
 ## [1.0.1] - 2025-11-22
 
 ### Fixed

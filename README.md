@@ -25,7 +25,9 @@ The tool works with any OpenSCAD template that follows a simple placeholder conv
 ### Optional (for STL rendering)
 
 - **OpenSCAD CLI** - Download from [openscad.org](https://openscad.org/downloads.html)
-  - Ensure `openscad` is available on your system PATH
+  - The app automatically detects OpenSCAD in common installation locations
+  - No PATH configuration required on most systems!
+  - See [OPENSCAD_SETUP.md](OPENSCAD_SETUP.md) for detailed setup instructions
   - Without OpenSCAD, you can still generate `.scad` files
 
 ## 📦 Installation

@@ -4,9 +4,10 @@ import streamlit as st
 from pathlib import Path
 import tempfile
 import shutil
+import subprocess
 from keychain_maker.models import KeychainRequest
 from keychain_maker.templates import render_template, write_scad_and_font
-from keychain_maker.scad_renderer import render_stl, check_openscad_installed
+from keychain_maker.scad_renderer import render_stl, check_openscad_installed, get_openscad_path, get_openscad_version
 
 # Page configuration
 st.set_page_config(
@@ -38,11 +39,42 @@ with st.sidebar:
     """)
     
     # Check OpenSCAD installation
-    if check_openscad_installed():
+    openscad_path = get_openscad_path()
+    
+    if openscad_path:
         st.success("✅ OpenSCAD CLI detected")
+        version = get_openscad_version(openscad_path)
+        if version:
+            st.info(f"📍 {version}")
+        st.code(openscad_path, language="text")
     else:
-        st.warning("⚠️ OpenSCAD CLI not found. STL rendering will be disabled.")
+        st.warning("⚠️ OpenSCAD CLI not found")
         st.markdown("[Install OpenSCAD](https://openscad.org/downloads.html)")
+        
+        # Allow manual path configuration
+        with st.expander("🔧 Configure OpenSCAD Path"):
+            st.markdown("""
+            If OpenSCAD is installed but not detected, you can:
+            
+            **Option 1:** Set environment variable before running:
+            ```bash
+            export OPENSCAD_PATH="/path/to/openscad"
+            streamlit run app.py
+            ```
+            
+            **Option 2:** Add OpenSCAD to your system PATH
+            
+            **Common Windows paths:**
+            - `C:\\Program Files\\OpenSCAD\\openscad.exe`
+            - `C:\\Program Files (x86)\\OpenSCAD\\openscad.exe`
+            
+            **Common macOS paths:**
+            - `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`
+            
+            **Common Linux paths:**
+            - `/usr/bin/openscad`
+            - `/usr/local/bin/openscad`
+            """)
 
 # Main form
 st.header("Generate Keychain")
@@ -151,14 +183,12 @@ if st.button("🚀 Generate Keychain", type="primary", use_container_width=True)
                                 # Define STL output path
                                 stl_output_path = output_dir / f"{output_basename}.stl"
                                 
-                                import subprocess
-                                cmd = [
-                                    "openscad",
-                                    "-o",
-                                    str(stl_output_path),
-                                    str(scad_output_path),
-                                ]
-                                result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+                                # Render STL using detected OpenSCAD path
+                                render_stl(
+                                    scad_file_path=str(scad_output_path),
+                                    stl_file_path=str(stl_output_path),
+                                    openscad_path=openscad_path
+                                )
                                 
                                 st.success("✅ STL file rendered successfully!")
                         except subprocess.CalledProcessError as e:
